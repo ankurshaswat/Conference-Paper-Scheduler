@@ -48,14 +48,13 @@ int * get2RandomPapers(int parallelTracks,int sessionsInTrack,int papersInSessio
     uniform_int_distribution<int> distributionPaper(0,papersInSession - 1);
 
     do {
-
     papers[0] = distributionTrack(generator);
     papers[1] = distributionSession(generator);
     papers[2] = distributionPaper(generator);
     papers[3] = distributionTrack(generator);
     papers[4] = distributionSession(generator);
     papers[5] = distributionPaper(generator);
-    } while (papers[1] != papers[4]);
+    } while (!(papers[1] == papers[4] && papers[0] == papers[3]));
 
     return papers;
 }

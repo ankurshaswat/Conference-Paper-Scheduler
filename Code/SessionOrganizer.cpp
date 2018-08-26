@@ -29,12 +29,22 @@ void SessionOrganizer::organizePapers ( )
     for(int i =0;i < 100;i++) {
         int* papers = get2RandomPapers(parallelTracks, sessionsInTrack, papersInSession);
         
-        int paper1 = conference->getPaper(papers[0],papers[1],papers[2]);
-        int paper2 = conference->getPaper(papers[3],papers[4],papers[5]);
-        double newScore = swappedScore(paper1,paper2,oldScore,this->getDistanceMatrix);
+        int paper1[3];
+        paper1[0] = papers[0];
+        paper1[1] = papers[1];
+        paper1[2] = papers[2];
+        int paper2[3];
+        paper2[0] = papers[3];
+        paper2[1] = papers[4];
+        paper2[2] = papers[5];
+        double newScore = swappedScore(paper1,paper2,oldScore,this->getDistanceMatrix,tradeoffCoefficient,conference);
         if(swappedScore(papers) > oldScore) {
             conference->swap(papers,newScore);
             oldScore = newScore;
+
+            cout<< "Swapping to new score of "<<newScore<<endl;
+        } else {
+           cout<< "Neighbour not better"<<endl; 
         }
     }
 
