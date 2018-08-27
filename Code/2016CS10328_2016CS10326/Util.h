@@ -94,12 +94,14 @@ double swappedScore(int *paper1, int *paper2, double oldScore, double **distance
     {
         for (int j = 0; j < numPapersInSession; j++)
         {
-
             int paperWith1 = conference->getPaper(i, p1P, j);
             if (i == p1T)
             {
-                newScore += distanceMatrix[paperWith1][paper1InDM];
-                newScore -= distanceMatrix[paperWith1][paper2InDM];
+                if (paperWith1 != paper1InDM)
+                {
+                    newScore += distanceMatrix[paperWith1][paper1InDM];
+                    newScore -= distanceMatrix[paperWith1][paper2InDM];
+                }
             }
             else
             {
@@ -110,8 +112,11 @@ double swappedScore(int *paper1, int *paper2, double oldScore, double **distance
             int paperWith2 = conference->getPaper(i, p2P, j);
             if (i == p2T)
             {
-                newScore += distanceMatrix[paperWith2][paper2InDM];
-                newScore -= distanceMatrix[paperWith2][paper1InDM];
+                if (paperWith2 != paper2InDM)
+                {
+                    newScore += distanceMatrix[paperWith2][paper2InDM];
+                    newScore -= distanceMatrix[paperWith2][paper1InDM];
+                }
             }
             else
             {
@@ -125,6 +130,7 @@ double swappedScore(int *paper1, int *paper2, double oldScore, double **distance
     {
         newScore += 2 * c * distanceMatrix[paper1InDM][paper2InDM];
     }
+
     // for(int i = 0 ; i < papersInSession*(tracksNo-1);i+=1) {
     //     newScore -= c*distanceMatrix[p1Row[i]][paper1InDM] ;
     //     newScore -= c*distanceMatrix[p2Row[i]][paper2InDM] ;
@@ -142,6 +148,12 @@ double swappedScore(int *paper1, int *paper2, double oldScore, double **distance
     // cout<<"Checking Paper Swap of "<<paper1InDM<<"&"<<paper2InDM<<endl;
     // cout<<"OldScore="<<oldScore<<" NewScore="<<newScore<<endl;
     return newScore;
+}
+
+int getElapsedMilli(clock_t initial)
+{
+    clock_t end = clock();
+    return double(end - initial) * 100 / CLOCKS_PER_SEC;
 }
 
 #endif /* UTIL_H */

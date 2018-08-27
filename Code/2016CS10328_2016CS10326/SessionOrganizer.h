@@ -34,12 +34,13 @@ class SessionOrganizer
     int papersInSession;
     int sessionsInTrack;
 
-    Conference *conference;
+   
 
     double processingTimeInMinutes;
     double tradeoffCoefficient; // the tradeoff coefficient
 
   public:
+    Conference *conference;
     SessionOrganizer();
     SessionOrganizer(string filename);
 
@@ -66,7 +67,7 @@ class SessionOrganizer
      * Score the organization.
      * @return the score.
      */
-    double scoreOrganization();
+    double scoreOrganization(Conference *conference);
 
     void printSessionOrganiser(char *);
 };

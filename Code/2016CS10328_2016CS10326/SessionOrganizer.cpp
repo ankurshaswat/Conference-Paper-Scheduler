@@ -6,6 +6,7 @@
 
 #include "SessionOrganizer.h"
 #include "Util.h"
+#include <algorithm>
 
 SessionOrganizer::SessionOrganizer()
 {
@@ -20,8 +21,21 @@ SessionOrganizer::SessionOrganizer(string filename)
 {
     readInInputFile(filename);
     conference = new Conference(parallelTracks, sessionsInTrack, papersInSession);
+}
 
+void SessionOrganizer::organizePapers()
+{
+    clock_t begin = clock();
+    int milliSeconds = processingTimeInMinutes * 60 * 100;
+    Conference *tempConference = new Conference(parallelTracks, sessionsInTrack, papersInSession);
     int paperCounter = 0;
+    int totalPapers = parallelTracks * sessionsInTrack * papersInSession;
+    int *papersArray = new int[totalPapers];
+
+    for (int i = 0; i < totalPapers; i++)
+    {
+        papersArray[i] = i;
+    }
 
     for (int i = 0; i < sessionsInTrack; i++)
     {
@@ -29,52 +43,57 @@ SessionOrganizer::SessionOrganizer(string filename)
         {
             for (int k = 0; k < papersInSession; k++)
             {
+                tempConference->setPaper(j, i, k, paperCounter);
                 conference->setPaper(j, i, k, paperCounter);
                 paperCounter++;
             }
         }
     }
-
-    conference->setScore(scoreOrganization());
-}
-
-void SessionOrganizer::organizePapers()
-{
+    // delete papersArray;
+    // tempConference->setScore(scoreOrganization(tempConference));
 
     double **distanceMatrix = this->getDistanceMatrix();
 
     /**
      * Fast Local Search
     **/
-    // double oldScore = conference->getScore();
-    // for(int i =0;i < 2000;i++) {
-    //     int* papers = get2RandomPapers(parallelTracks, sessionsInTrack, papersInSession);
+    // double oldScore = tempConference->getScore();
+    // for (int i = 0; i < 10000; i++)
+    // {
+    //     int *papers = get2RandomPapers(parallelTracks, sessionsInTrack, papersInSession);
     //     bool swapped = false;
     //     int paper1[3];
     //     paper1[0] = papers[0];
     //     paper1[1] = papers[1];
     //     paper1[2] = papers[2];
-    //     for (int x=0;x<parallelTracks;x++) {
-    //         if(swapped == true) {
+    //     for (int x = 0; x < parallelTracks; x++)
+    //     {
+    //         if (swapped == true)
+    //         {
     //             break;
     //         }
-    //         for(int y=0;y<sessionsInTrack;y++) {
-    //             if(swapped == true) {
+    //         for (int y = 0; y < sessionsInTrack; y++)
+    //         {
+    //             if (swapped == true)
+    //             {
     //                 break;
     //             }
-    //             if (x== paper1[0] && y == paper1[1]) {
+    //             if (x == paper1[0] && y == paper1[1])
+    //             {
     //                 continue;
     //             }
-    //             for(int z=0;z<papersInSession;z++) {
+    //             for (int z = 0; z < papersInSession; z++)
+    //             {
     //                 int paper2[3];
     //                 paper2[0] = x;
     //                 paper2[1] = y;
     //                 paper2[2] = z;
-    //                 double newScore = swappedScore(paper1,paper2,oldScore,distanceMatrix,tradeoffCoefficient,conference);
-    //                 if(newScore > oldScore) {
-    //                     conference->swap(paper1,paper2,newScore);
+    //                 double newScore = swappedScore(paper1, paper2, oldScore, distanceMatrix, tradeoffCoefficient, tempConference);
+    //                 if (newScore > oldScore)
+    //                 {
+    //                     tempConference->swap(paper1, paper2, newScore);
     //                     oldScore = newScore;
-    //                     cout<<"New Score "<<newScore<<endl;
+    //                     cout << "New Score " << newScore << endl;
     //                     swapped = true;
     //                     break;
     //                 }
@@ -86,53 +105,117 @@ void SessionOrganizer::organizePapers()
     /**
      * Best Neighbour Local Search
     **/
-    double oldScore = conference->getScore();
-    for (int i = 0; i < 2000; i++)
+    tempConference->setScore(scoreOrganization(tempConference));
+    double oldScore = tempConference->getScore();
+    double bestModelScore = oldScore;
+    for (int randomRestart = 0;; randomRestart++)
     {
-        // double oldScore = scoreOrganization();
-        int *papers = get2RandomPapers(parallelTracks, sessionsInTrack, papersInSession);
-        int paper1[3];
-        paper1[0] = papers[0];
-        paper1[1] = papers[1];
-        paper1[2] = papers[2];
-        int bestNeightbour[3];
-        double bestScore = oldScore;
-        for (int x = 0; x < parallelTracks; x++)
+        cout << "Model Score = " << oldScore << endl;
+        if (randomRestart > 0)
         {
-            for (int y = 0; y < sessionsInTrack; y++)
+            if (oldScore > bestModelScore)
             {
-                if (x == paper1[0] && y == paper1[1])
+                // assign tempConference to conference
+                for (int i = 0; i < sessionsInTrack; i++)
                 {
-                    continue;
-                }
-                for (int z = 0; z < papersInSession; z++)
-                {
-                    int paper2[3];
-                    paper2[0] = x;
-                    paper2[1] = y;
-                    paper2[2] = z;
-                    double newScore = swappedScore(paper1, paper2, oldScore, distanceMatrix, tradeoffCoefficient, conference);
-                    if (newScore > bestScore)
+                    for (int j = 0; j < parallelTracks; j++)
                     {
-                        bestNeightbour[0] = x;
-                        bestNeightbour[1] = y;
-                        bestNeightbour[2] = z;
-                        bestScore = newScore;
-                        cout << "New Best Score " << bestScore << endl;
+                        for (int k = 0; k < papersInSession; k++)
+                        {
+                            conference->setPaper(j, i, k, tempConference->getPaper(j, i, k));
+                        }
+                    }
+                }
+                bestModelScore = oldScore;
+            }
+
+            if ( milliSeconds - getElapsedMilli(begin) < 300 ) {
+                break;
+            }
+            // shuffle conference
+            random_shuffle(&papersArray[0], &papersArray[totalPapers]);
+
+            int paperCounter = 0;
+            for (int i = 0; i < sessionsInTrack; i++)
+            {
+                for (int j = 0; j < parallelTracks; j++)
+                {
+                    for (int k = 0; k < papersInSession; k++)
+                    {
+                        tempConference->setPaper(j, i, k, papersArray[paperCounter]);
+                        paperCounter++;
                     }
                 }
             }
+            tempConference->setScore(scoreOrganization(tempConference));
+            oldScore = tempConference->getScore();
         }
-        if (bestScore != oldScore)
+
+        int unchangedCount = 0;
+        for (int i = 0;; i++)
         {
-            conference->swap(paper1, bestNeightbour, bestScore);
+
+            // double oldScore = scoreOrganization();
+            int *papers = get2RandomPapers(parallelTracks, sessionsInTrack, papersInSession);
+            int paper1[3];
+            paper1[0] = papers[0];
+            paper1[1] = papers[1];
+            paper1[2] = papers[2];
+            int bestNeightbour[3];
+            double bestScore = oldScore;
+            for (int x = 0; x < parallelTracks; x++)
+            {
+                for (int y = 0; y < sessionsInTrack; y++)
+                {
+                    if (x == paper1[0] && y == paper1[1])
+                    {
+                        continue;
+                    }
+                    for (int z = 0; z < papersInSession; z++)
+                    {
+                        int paper2[3];
+                        paper2[0] = x;
+                        paper2[1] = y;
+                        paper2[2] = z;
+                        double newScore = swappedScore(paper1, paper2, oldScore, distanceMatrix, tradeoffCoefficient, tempConference);
+                        if (newScore > bestScore)
+                        {
+                            bestNeightbour[0] = x;
+                            bestNeightbour[1] = y;
+                            bestNeightbour[2] = z;
+                            bestScore = newScore;
+                            // cout << "New Best Score " << bestScore << endl;
+                        }
+                    }
+                }
+                if (bestScore >= 1.00025 * oldScore)
+                {
+                    // cout << "Should Skip" << 0.00005 * oldScore << endl;
+                    break;
+                }
+            }
+            if (bestScore != oldScore)
+            {
+                tempConference->swap(paper1, bestNeightbour, bestScore);
+                // if (unchangedCount != 0)
+                // {
+                    // cout << unchangedCount << endl;
+                // }
+                unchangedCount = 0;
+                // cout<<bestScore<<' '<<scoreOrganization(tempConference)<<endl;
+            }
+            else
+            {
+                unchangedCount++;
+                // cout<<unchangedCount<<endl;
+            }
+            oldScore = bestScore;
+
+            if (unchangedCount > 0.3 * totalPapers || milliSeconds - getElapsedMilli(begin) < 300)
+            {
+                break;
+            }
         }
-        // if (scoreOrganization() != bestScore) {
-        //     cout<<scoreOrganization() - bestScore<<endl;
-        //     cout<<"Big Error in swapping "<<paper1[0]<<' '<<paper1[1]<<' '<<paper1[2]<<' '<<bestNeightbour[0]<<' '<<bestNeightbour[1]<<' '<<bestNeightbour[2]<<endl;
-        //     exit(0);
-        // }
-        oldScore = bestScore;
     }
 }
 
@@ -206,7 +289,7 @@ void SessionOrganizer::printSessionOrganiser(char *filename)
     conference->printConference(filename);
 }
 
-double SessionOrganizer::scoreOrganization()
+double SessionOrganizer::scoreOrganization(Conference *conference)
 {
     // Sum of pairwise similarities per session.
     double score1 = 0.0;
