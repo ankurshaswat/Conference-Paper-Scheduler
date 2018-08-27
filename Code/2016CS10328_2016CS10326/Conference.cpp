@@ -91,13 +91,11 @@ int* Conference::getAllParallel(int trackIndex, int sessionIndex, int paperIndex
     for(int i = 0 ; i < getParallelTracks( ); i += 1) {
         if(i != trackIndex) {
             for(int j = 0 ; j < papersInSession ; j += 1 ){
-                // cout<<getPaper(i,sessionIndex,j)<<endl;
                 rowIndices[count++]= getPaper(i,sessionIndex,j) ; 
             }
         }
     }
 
-//  cout<<rowIndices[0]<<endl;
     return rowIndices ; 
 }
 
@@ -111,7 +109,6 @@ int *Conference::getPapersInCurrentSession(int trackIndex, int sessionIndex, int
             currSessionIndices[count++] = getPaper(trackIndex,sessionIndex,i) ;  
         }
     }
-    // cout<<currSessionIndices[0]<<endl;
     return currSessionIndices ; 
     
 }
@@ -150,13 +147,14 @@ double Conference::getScore() {
     return this->score;
 }
 
-void Conference::swap(int* papers,double newScore) {
+void Conference::swap(int* paper1,int* paper2,double newScore) {
     this->setScore(newScore);
     int oldVals[2];
 
-    oldVals[0] = getPaper(papers[0],papers[1],papers[2]);
-    oldVals[1] = getPaper(papers[3],papers[4],papers[5]);
+    oldVals[0] = getPaper(paper1[0],paper1[1],paper1[2]);
+    oldVals[1] = getPaper(paper2[0],paper2[1],paper2[2]);
+    // oldVals[1] = getPaper(papers[3],papers[4],papers[5]);
 
-    setPaper(papers[0],papers[1],papers[2],oldVals[1]);
-    setPaper(papers[3],papers[4],papers[5],oldVals[0]);
+    setPaper(paper1[0],paper1[1],paper1[2],oldVals[1]);
+    setPaper(paper2[0],paper2[1],paper2[2],oldVals[0]);
 }

@@ -7,7 +7,6 @@
 #ifndef UTIL_H
 #define	UTIL_H
 
-#include <random>
 #include "Conference.h"
 #include <time.h>  
 
@@ -44,59 +43,17 @@ void splitString(string message, string delimiter, string result[], int n) {
 int * get2RandomPapers(int parallelTracks,int sessionsInTrack,int papersInSession) {
     int* papers = new int[6];
 
-    // default_random_engine generator;
-    // uniform_int_distribution<int> distributionTrack(0,parallelTracks - 1);
-    // uniform_int_distribution<int> distributionSession(0,sessionsInTrack - 1);
-    // uniform_int_distribution<int> distributionPaper(0,papersInSession - 1);
-    // uniform_int_distribution<int> completeDistribution(0,parallelTracks*sessionsInTrack*papersInSession * 3 - 1);
-    srand (time(0));    
+     srand (time(0));    
    
     do {
-
-    // // int randNumber = completeDistribution(generator);
-
-    // int randNumber = rand();
-    // randNumber %= parallelTracks*sessionsInTrack*papersInSession;
-    // papers[2] = randNumber%papersInSession;
-    // randNumber /= papersInSession;
-    // papers[1] = randNumber%sessionsInTrack;
-    // randNumber /= sessionsInTrack;
-    // papers[0] = randNumber;
-
-    // // srand (time(NULL));    
-    // // // randNumber    = completeDistribution(generator);
-    // randNumber = rand();
-    // randNumber %= parallelTracks*sessionsInTrack*papersInSession;
-    // papers[5] = randNumber%papersInSession;
-    // randNumber /= papersInSession;
-    // papers[4] = randNumber%sessionsInTrack;
-    // randNumber /= sessionsInTrack;
-    // papers[3] = randNumber;
-
-    // papers[0] = distributionTrack(generator);
-    // papers[1] = distributionSession(generator);
-    // papers[2] = distributionPaper(generator);
-    // papers[3] = distributionTrack(generator);
-    // papers[4] = distributionSession(generator);
-    // srand (time(NULL));    
-    // papers[5] = distributionPaper(generator);
     papers[0] = rand() % parallelTracks;
-    // srand (time(NULL));    
     papers[1] = rand() % sessionsInTrack;
-    // srand (time(NULL));    
     papers[2] = rand() % papersInSession;
-    // srand (time(NULL));    
     papers[3] = rand() % parallelTracks;
-    // srand (time(NULL));    
     papers[4] = rand() % sessionsInTrack;
-    // srand (time(NULL));    
     papers[5] = rand() % papersInSession;
-    // srand (time(NULL));   
-    // cout<<"run"<<endl;
     } while (papers[1] == papers[4] && papers[0] == papers[3]);
 
-    // cout<<(papers[1] == papers[4] && papers[0] == papers[3])<<endl;
-    // cout<<papers[0]<<' '<<papers[1]<<' '<<papers[2]<<' '<<papers[3]<<' '<<papers[4]<<' '<<papers[5]<<endl;
     return papers;
 
 }
@@ -112,6 +69,10 @@ double  swappedScore(int* paper1,int* paper2,double oldScore,double** distanceMa
     int p2P = paper2[1] ; 
     int p2K = paper2[2]  ;
 
+    if(p1T == p2T && p1P == p2P) {
+        return oldScore;
+    }
+
     int *p1Row = conference->getAllParallel(p1T,p1P,p1K) ; 
     int *p2Row = conference->getAllParallel(p2T,p2P,p2K);
     int *p1Session = conference->getPapersInCurrentSession(p1T,p1P,p1K) ;
@@ -125,8 +86,6 @@ double  swappedScore(int* paper1,int* paper2,double oldScore,double** distanceMa
     int papersInSession = conference->getPapersInSession() ; 
 
     for(int i = 0 ; i < papersInSession*(tracksNo-1);i+=1) {
-        // cout<<"In SwappedScoreLoop -- "<<i<<' '<<p1Row[i]<<' '<<paper1InDM<<endl;
-        // cout<<distanceMatrix[p1Row[i]][paper1InDM]<<endl;
         newScore -= c*distanceMatrix[p1Row[i]][paper1InDM] ;
         newScore -= c*distanceMatrix[p2Row[i]][paper2InDM] ;
         newScore += c*distanceMatrix[p1Row[i]][paper2InDM] ;
@@ -134,19 +93,18 @@ double  swappedScore(int* paper1,int* paper2,double oldScore,double** distanceMa
     }
 
     if(p1P == p2P){
-    newScore += 3*c*distanceMatrix[paper1InDM][paper2InDM];
+    newScore += 2*c*distanceMatrix[paper1InDM][paper2InDM];
     }
 
     for(int i = 0 ; i < papersInSession -1 ; i+=1) {
-        // cout<<p1Session[i]<<' '<<paper1InDM<<endl;
         newScore += distanceMatrix[p1Session[i]][paper1InDM] ;
         newScore += distanceMatrix[p2Session[i]][paper2InDM] ;
         newScore -= distanceMatrix[p1Session[i]][paper2InDM] ;
         newScore -= distanceMatrix[p2Session[i]][paper1InDM] ;                
     }
 
-    cout<<"Checking Paper Swap of "<<paper1InDM<<"&"<<paper2InDM<<endl;
-    cout<<"OldScore="<<oldScore<<" NewScore="<<newScore<<endl;
+    // cout<<"Checking Paper Swap of "<<paper1InDM<<"&"<<paper2InDM<<endl;
+    // cout<<"OldScore="<<oldScore<<" NewScore="<<newScore<<endl;
     return newScore ; 
 }
 

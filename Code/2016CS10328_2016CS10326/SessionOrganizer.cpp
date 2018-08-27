@@ -47,22 +47,7 @@ SessionOrganizer::SessionOrganizer ( string filename )
 void SessionOrganizer::organizePapers ( )
 {
     double oldScore = conference->getScore();
-  
-    // int* papers = get2RandomPapers(parallelTracks, sessionsInTrack, papersInSession);
-        
-    // int paper1[3];
-    // paper1[0] = papers[0];
-    // paper1[1] = papers[1];
-    // paper1[2] = papers[2];
-    // int paper2[3];
-    // paper2[0] = papers[3];
-    // paper2[1] = papers[4];
-    // paper2[2] = papers[5];
-    // double newScore = swappedScore(paper1,paper2,oldScore,this->getDistanceMatrix(),tradeoffCoefficient,conference);
-    // conference->swap(papers,newScore);
-    // oldScore = newScore;
-
-    for(int i =0;i < 100;i++) {
+    for(int i =0;i < 1000;i++) {
         int* papers = get2RandomPapers(parallelTracks, sessionsInTrack, papersInSession);
         bool swapped = false;
         int paper1[3];
@@ -85,34 +70,17 @@ void SessionOrganizer::organizePapers ( )
                     paper2[0] = x;
                     paper2[1] = y;
                     paper2[2] = z;
-                    // cout<<x<<' '<<y<<' '<<z<<' '<<paper1[0]<<' '<<paper1[1]<<' '<<paper1[2]<<endl;
                     double newScore = swappedScore(paper1,paper2,oldScore,this->getDistanceMatrix(),tradeoffCoefficient,conference);
                     if(newScore > oldScore) {
-                        conference->swap(papers,newScore);
+                        conference->swap(paper1,paper2,newScore);
                         oldScore = newScore;
 
-                        cout<< "Setting score to"<<newScore<<endl;
                         swapped = true;
-                    } else {
-                        // cout<< "Neighbour not better"<<endl; 
-                    }
+                        break;
+                    } 
                 }
             }
         }
-        
-        // int paper2[3];
-        // paper2[0] = papers[3];
-        // paper2[1] = papers[4];
-        // paper2[2] = papers[5];
-        // double newScore = swappedScore(paper1,paper2,oldScore,this->getDistanceMatrix(),tradeoffCoefficient,conference);
-        // if(newScore > oldScore) {
-        //     conference->swap(papers,newScore);
-        //     oldScore = newScore;
-
-        //     cout<< "Swapping to new score of "<<newScore<<endl;
-        // } else {
-        //    cout<< "Neighbour not better"<<endl; 
-        // }
     }
 
     
@@ -127,7 +95,6 @@ void SessionOrganizer::readInInputFile ( string filename )
     {
         while ( getline ( myfile, line ) )
         {
-            //cout<<"Line read:"<<line<<endl;
             lines.push_back ( line );
         }
         myfile.close ( );

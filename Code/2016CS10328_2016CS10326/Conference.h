@@ -97,7 +97,7 @@ public:
 
     double getScore();
 
-    void swap(int* papers,double score);
+    void swap(int* paper1,int* paper2,double score);
 
     int *getPapersInCurrentSession(int trackIndex, int sessionIndex, int paperIndex) ;
 
