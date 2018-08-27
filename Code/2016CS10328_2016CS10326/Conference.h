@@ -6,16 +6,17 @@
  */
 
 #ifndef CONFERENCE_H
-#define	CONFERENCE_H
+#define CONFERENCE_H
 
-#include<iostream>
-#include<fstream>
+#include <iostream>
+#include <fstream>
 using namespace std;
 
 #include "Track.h"
 
-class Conference {
-private:
+class Conference
+{
+  private:
     // The array of tracks.
     Track *tracks;
 
@@ -29,9 +30,10 @@ private:
     int papersInSession;
 
     double score;
-public:
+
+  public:
     Conference();
-    
+
     /**
      * Constructor for Conference.
      * 
@@ -40,8 +42,7 @@ public:
      * @param papersInSession is the number of papers in a session.
      */
     Conference(int parallelTracks, int sessionsInTrack, int papersInSession);
-    
-    
+
     /**
      * Initialize the tracks.
      * @param parallelTracks is the number of parallel tracks.
@@ -49,37 +50,32 @@ public:
      * @param papersInSession is the number of papers in a session.
      */
     void initTracks(int parallelTracks, int sessionsInTrack, int papersInSession);
-    
-    
+
     /**
      * Gets the number of parallel tracks.
      * @return the number of parallel tracks.
      */
     int getParallelTracks();
-    
-    
+
     /**
      * Gets the number of sessions in a track.
      * @return the number of sessions in a track.
      */
     int getSessionsInTrack();
-    
-    
+
     /**
      * Gets the number of papers in a session.
      * @return the number of papers in a session.
      */
     int getPapersInSession();
-    
-    
+
     /**
      * Gets the track at the specified index.
      * @param index is the index of the specified track.
      * @return the track
      */
     Track getTrack(int index);
-    
-    
+
     /**
      * Sets the paper in the specified slot to the given paper id.
      * @param trackIndex is the track index.
@@ -88,23 +84,20 @@ public:
      * @param paperId is the id of the paper.
      */
     void setPaper(int trackIndex, int sessionIndex, int paperIndex, int paperId);
-    
+
     int getPaper(int trackIndex, int sessionIndex, int paperIndex);
-    
+
     void printConference(char *);
 
     void setScore(double score);
 
     double getScore();
 
-    void swap(int* paper1,int* paper2,double score);
+    void swap(int *paper1, int *paper2, double score);
 
-    int *getPapersInCurrentSession(int trackIndex, int sessionIndex, int paperIndex) ;
+    int *getPapersInCurrentSession(int trackIndex, int sessionIndex, int paperIndex);
 
     int *getAllParallel(int trackIndex, int sessionIndex, int paperIndex);
-
-
 };
 
-#endif	/* CONFERENCE_H */
-
+#endif /* CONFERENCE_H */
