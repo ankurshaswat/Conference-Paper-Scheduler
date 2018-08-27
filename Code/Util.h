@@ -8,7 +8,7 @@
 #define	UTIL_H
 
 #include <random>
-
+#include "Conference.h"
 /**
  * Utility Function to split string message, using give delimiter. The result is stored in result[] array.
  * 
@@ -57,7 +57,46 @@ int * get2RandomPapers(int parallelTracks,int sessionsInTrack,int papersInSessio
     } while (!(papers[1] == papers[4] && papers[0] == papers[3]));
 
     return papers;
+
 }
+
+double  swappedScore(int* paper1,int* paper2,double oldScore,double** getDistanceMatrix,double c,Conference* conference){
+
+    int p1T = paper1[0] ;
+    int p1P = paper1[1]  ;
+    int p1K = paper1[2]   ;   
+    int p2T = paper2[0];
+    int p2P = paper2[1] ; 
+    int p2K = paper2[2]  ;
+
+    int *p1Row = conference->getAllParallel(p1T,p1P,p1K) ; 
+    int *p2Row = conference->getAllParallel(p2T,p2P,p2K);
+    int *p1Session = conference->getPapersInCurrentSession(p1T,p1P,p1K) ;
+    int *p2Session = conference->getPapersInCurrentSession(p2T,p2P,p2K) ;
+
+    int paper1InDM = conference->getPaper(p1T,p1P,p1K) ; 
+    int paper2InDM = conference->getPaper(p2T,p2P,p2K) ; 
+
+    int tracksNo = conference->getParallelTracks();
+    int sessionsInTrack = conference->getSessionsInTrack() ;
+    int papersInSession = conference->getPapersInSession() ; 
+
+    for(int i = 0 ; i < tracksNo*(papersInSession-1);i+=1) {
+        oldScore -= getDistanceMatrix[p1Row[i]][paper1InDM] ;
+        oldScore -= getDistanceMatrix[p2Row[i]][paper2InDM] ;
+        oldScore += getDistanceMatrix[p1Row[i]][paper2InDM] ;
+        oldScore += getDistanceMatrix[p2Row[i]][paper1InDM] ;
+    } 
+
+    for(int i = 0 ; i < papersInSession -1 ; i+=1) {
+        oldScore += getDistanceMatrix[p1Session[i]][paper1InDM] ;
+        oldScore += getDistanceMatrix[p2Session[i]][paper2InDM] ;
+        oldScore -= getDistanceMatrix[p1Session[i]][paper2InDM] ;
+        oldScore -= getDistanceMatrix[p2Session[i]][paper1InDM] ;                
+    }
+
+    return oldScore ; 
+} 
 
 #endif	/* UTIL_H */
 

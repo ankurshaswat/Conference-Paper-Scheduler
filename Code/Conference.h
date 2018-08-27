@@ -98,6 +98,12 @@ public:
     double getScore();
 
     void swap(int* papers,double score);
+
+    int *getPapersInCurrentSession(int trackIndex, int sessionIndex, int paperIndex) ;
+
+    int *getAllParallel(int trackIndex, int sessionIndex, int paperIndex);
+
+
 };
 
 #endif	/* CONFERENCE_H */
