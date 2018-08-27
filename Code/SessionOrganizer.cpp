@@ -26,7 +26,8 @@ SessionOrganizer::SessionOrganizer ( string filename )
     // int parallelTracks = conference->getParallelTracks();
     // int papersInSession = conference->getPapersInSession();
      
-    int paperCounter = sessionsInTrack*parallelTracks*papersInSession - 1;
+    // int paperCounter = sessionsInTrack*parallelTracks*papersInSession - 1;
+    int paperCounter = 0;
     
     for ( int i = 0; i < sessionsInTrack; i++ )
     {
@@ -35,7 +36,7 @@ SessionOrganizer::SessionOrganizer ( string filename )
             for ( int k = 0; k < papersInSession; k++ )
             {
                 conference->setPaper ( j, i, k, paperCounter );
-                paperCounter--;
+                paperCounter++;
             }
         }
     }
@@ -47,26 +48,71 @@ void SessionOrganizer::organizePapers ( )
 {
     double oldScore = conference->getScore();
   
+    // int* papers = get2RandomPapers(parallelTracks, sessionsInTrack, papersInSession);
+        
+    // int paper1[3];
+    // paper1[0] = papers[0];
+    // paper1[1] = papers[1];
+    // paper1[2] = papers[2];
+    // int paper2[3];
+    // paper2[0] = papers[3];
+    // paper2[1] = papers[4];
+    // paper2[2] = papers[5];
+    // double newScore = swappedScore(paper1,paper2,oldScore,this->getDistanceMatrix(),tradeoffCoefficient,conference);
+    // conference->swap(papers,newScore);
+    // oldScore = newScore;
+
     for(int i =0;i < 100;i++) {
         int* papers = get2RandomPapers(parallelTracks, sessionsInTrack, papersInSession);
-        
+        bool swapped = false;
         int paper1[3];
         paper1[0] = papers[0];
         paper1[1] = papers[1];
         paper1[2] = papers[2];
-        int paper2[3];
-        paper2[0] = papers[3];
-        paper2[1] = papers[4];
-        paper2[2] = papers[5];
-        double newScore = swappedScore(paper1,paper2,oldScore,this->getDistanceMatrix(),tradeoffCoefficient,conference);
-        if(newScore > oldScore) {
-            conference->swap(papers,newScore);
-            oldScore = newScore;
+        for (int x=0;x<parallelTracks;x++) {
+            if(swapped == true) {
+                break;
+            }
+            for(int y=0;y<sessionsInTrack;y++) {
+                if(swapped == true) {
+                    break;
+                }
+                if (x== paper1[0] && y == paper1[1]) {
+                    continue;
+                }
+                for(int z=0;z<papersInSession;z++) {
+                    int paper2[3];
+                    paper2[0] = x;
+                    paper2[1] = y;
+                    paper2[2] = z;
+                    // cout<<x<<' '<<y<<' '<<z<<' '<<paper1[0]<<' '<<paper1[1]<<' '<<paper1[2]<<endl;
+                    double newScore = swappedScore(paper1,paper2,oldScore,this->getDistanceMatrix(),tradeoffCoefficient,conference);
+                    if(newScore > oldScore) {
+                        conference->swap(papers,newScore);
+                        oldScore = newScore;
 
-            cout<< "Swapping to new score of "<<newScore<<endl;
-        } else {
-           cout<< "Neighbour not better"<<endl; 
+                        cout<< "Setting score to"<<newScore<<endl;
+                        swapped = true;
+                    } else {
+                        // cout<< "Neighbour not better"<<endl; 
+                    }
+                }
+            }
         }
+        
+        // int paper2[3];
+        // paper2[0] = papers[3];
+        // paper2[1] = papers[4];
+        // paper2[2] = papers[5];
+        // double newScore = swappedScore(paper1,paper2,oldScore,this->getDistanceMatrix(),tradeoffCoefficient,conference);
+        // if(newScore > oldScore) {
+        //     conference->swap(papers,newScore);
+        //     oldScore = newScore;
+
+        //     cout<< "Swapping to new score of "<<newScore<<endl;
+        // } else {
+        //    cout<< "Neighbour not better"<<endl; 
+        // }
     }
 
     

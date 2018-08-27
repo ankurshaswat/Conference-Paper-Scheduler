@@ -48,11 +48,13 @@ int * get2RandomPapers(int parallelTracks,int sessionsInTrack,int papersInSessio
     // uniform_int_distribution<int> distributionTrack(0,parallelTracks - 1);
     // uniform_int_distribution<int> distributionSession(0,sessionsInTrack - 1);
     // uniform_int_distribution<int> distributionPaper(0,papersInSession - 1);
-    srand (time(NULL));    
     // uniform_int_distribution<int> completeDistribution(0,parallelTracks*sessionsInTrack*papersInSession * 3 - 1);
+    srand (time(0));    
+   
     do {
 
     // // int randNumber = completeDistribution(generator);
+
     // int randNumber = rand();
     // randNumber %= parallelTracks*sessionsInTrack*papersInSession;
     // papers[2] = randNumber%papersInSession;
@@ -61,7 +63,8 @@ int * get2RandomPapers(int parallelTracks,int sessionsInTrack,int papersInSessio
     // randNumber /= sessionsInTrack;
     // papers[0] = randNumber;
 
-    // // randNumber    = completeDistribution(generator);
+    // // srand (time(NULL));    
+    // // // randNumber    = completeDistribution(generator);
     // randNumber = rand();
     // randNumber %= parallelTracks*sessionsInTrack*papersInSession;
     // papers[5] = randNumber%papersInSession;
@@ -75,13 +78,21 @@ int * get2RandomPapers(int parallelTracks,int sessionsInTrack,int papersInSessio
     // papers[2] = distributionPaper(generator);
     // papers[3] = distributionTrack(generator);
     // papers[4] = distributionSession(generator);
+    // srand (time(NULL));    
     // papers[5] = distributionPaper(generator);
     papers[0] = rand() % parallelTracks;
+    // srand (time(NULL));    
     papers[1] = rand() % sessionsInTrack;
+    // srand (time(NULL));    
     papers[2] = rand() % papersInSession;
+    // srand (time(NULL));    
     papers[3] = rand() % parallelTracks;
+    // srand (time(NULL));    
     papers[4] = rand() % sessionsInTrack;
+    // srand (time(NULL));    
     papers[5] = rand() % papersInSession;
+    // srand (time(NULL));   
+    // cout<<"run"<<endl;
     } while (papers[1] == papers[4] && papers[0] == papers[3]);
 
     // cout<<(papers[1] == papers[4] && papers[0] == papers[3])<<endl;
@@ -113,8 +124,8 @@ double  swappedScore(int* paper1,int* paper2,double oldScore,double** distanceMa
     int sessionsInTrack = conference->getSessionsInTrack() ;
     int papersInSession = conference->getPapersInSession() ; 
 
-    for(int i = 0 ; i < tracksNo*(papersInSession-1);i+=1) {
-        // cout<<p1Row[i]<<' '<<paper1InDM<<endl;
+    for(int i = 0 ; i < papersInSession*(tracksNo-1);i+=1) {
+        // cout<<"In SwappedScoreLoop -- "<<i<<' '<<p1Row[i]<<' '<<paper1InDM<<endl;
         // cout<<distanceMatrix[p1Row[i]][paper1InDM]<<endl;
         newScore -= c*distanceMatrix[p1Row[i]][paper1InDM] ;
         newScore -= c*distanceMatrix[p2Row[i]][paper2InDM] ;
@@ -134,8 +145,8 @@ double  swappedScore(int* paper1,int* paper2,double oldScore,double** distanceMa
         newScore -= distanceMatrix[p2Session[i]][paper1InDM] ;                
     }
 
-    cout<<paper1InDM<<' '<<paper2InDM<<endl;
-    cout<<oldScore<<' '<<newScore<<endl;
+    cout<<"Checking Paper Swap of "<<paper1InDM<<"&"<<paper2InDM<<endl;
+    cout<<"OldScore="<<oldScore<<" NewScore="<<newScore<<endl;
     return newScore ; 
 }
 

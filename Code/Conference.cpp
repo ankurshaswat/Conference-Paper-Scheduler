@@ -86,7 +86,7 @@ int* Conference::getAllParallel(int trackIndex, int sessionIndex, int paperIndex
 
     int papersInSession = getPapersInSession() ;
     int parallelTracks = getParallelTracks() ; 
-    int *rowIndices = new int[parallelTracks*(papersInSession -1)];
+    int *rowIndices = new int[papersInSession*(parallelTracks -1)];
     int count = 0 ; 
     for(int i = 0 ; i < getParallelTracks( ); i += 1) {
         if(i != trackIndex) {
