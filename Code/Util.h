@@ -9,6 +9,8 @@
 
 #include <random>
 #include "Conference.h"
+#include <time.h>  
+
 /**
  * Utility Function to split string message, using give delimiter. The result is stored in result[] array.
  * 
@@ -42,20 +44,48 @@ void splitString(string message, string delimiter, string result[], int n) {
 int * get2RandomPapers(int parallelTracks,int sessionsInTrack,int papersInSession) {
     int* papers = new int[6];
 
-    default_random_engine generator;
-    uniform_int_distribution<int> distributionTrack(0,parallelTracks - 1);
-    uniform_int_distribution<int> distributionSession(0,sessionsInTrack - 1);
-    uniform_int_distribution<int> distributionPaper(0,papersInSession - 1);
-
+    // default_random_engine generator;
+    // uniform_int_distribution<int> distributionTrack(0,parallelTracks - 1);
+    // uniform_int_distribution<int> distributionSession(0,sessionsInTrack - 1);
+    // uniform_int_distribution<int> distributionPaper(0,papersInSession - 1);
+    srand (time(NULL));    
+    // uniform_int_distribution<int> completeDistribution(0,parallelTracks*sessionsInTrack*papersInSession * 3 - 1);
     do {
-    papers[0] = distributionTrack(generator);
-    papers[1] = distributionSession(generator);
-    papers[2] = distributionPaper(generator);
-    papers[3] = distributionTrack(generator);
-    papers[4] = distributionSession(generator);
-    papers[5] = distributionPaper(generator);
-    } while (!(papers[1] == papers[4] && papers[0] == papers[3]));
 
+    // // int randNumber = completeDistribution(generator);
+    // int randNumber = rand();
+    // randNumber %= parallelTracks*sessionsInTrack*papersInSession;
+    // papers[2] = randNumber%papersInSession;
+    // randNumber /= papersInSession;
+    // papers[1] = randNumber%sessionsInTrack;
+    // randNumber /= sessionsInTrack;
+    // papers[0] = randNumber;
+
+    // // randNumber    = completeDistribution(generator);
+    // randNumber = rand();
+    // randNumber %= parallelTracks*sessionsInTrack*papersInSession;
+    // papers[5] = randNumber%papersInSession;
+    // randNumber /= papersInSession;
+    // papers[4] = randNumber%sessionsInTrack;
+    // randNumber /= sessionsInTrack;
+    // papers[3] = randNumber;
+
+    // papers[0] = distributionTrack(generator);
+    // papers[1] = distributionSession(generator);
+    // papers[2] = distributionPaper(generator);
+    // papers[3] = distributionTrack(generator);
+    // papers[4] = distributionSession(generator);
+    // papers[5] = distributionPaper(generator);
+    papers[0] = rand() % parallelTracks;
+    papers[1] = rand() % sessionsInTrack;
+    papers[2] = rand() % papersInSession;
+    papers[3] = rand() % parallelTracks;
+    papers[4] = rand() % sessionsInTrack;
+    papers[5] = rand() % papersInSession;
+    } while (papers[1] == papers[4] && papers[0] == papers[3]);
+
+    // cout<<(papers[1] == papers[4] && papers[0] == papers[3])<<endl;
+    // cout<<papers[0]<<' '<<papers[1]<<' '<<papers[2]<<' '<<papers[3]<<' '<<papers[4]<<' '<<papers[5]<<endl;
     return papers;
 
 }
@@ -92,6 +122,10 @@ double  swappedScore(int* paper1,int* paper2,double oldScore,double** distanceMa
         newScore += c*distanceMatrix[p2Row[i]][paper1InDM] ;
     }
 
+    if(p1P == p2P){
+    newScore += 3*c*distanceMatrix[paper1InDM][paper2InDM];
+    }
+
     for(int i = 0 ; i < papersInSession -1 ; i+=1) {
         // cout<<p1Session[i]<<' '<<paper1InDM<<endl;
         newScore += distanceMatrix[p1Session[i]][paper1InDM] ;
@@ -100,8 +134,10 @@ double  swappedScore(int* paper1,int* paper2,double oldScore,double** distanceMa
         newScore -= distanceMatrix[p2Session[i]][paper1InDM] ;                
     }
 
+    cout<<paper1InDM<<' '<<paper2InDM<<endl;
+    cout<<oldScore<<' '<<newScore<<endl;
     return newScore ; 
-} 
+}
 
 #endif	/* UTIL_H */
 
