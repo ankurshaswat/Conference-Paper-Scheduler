@@ -82,32 +82,36 @@ int Conference::getPaper( int trackIndex, int sessionIndex, int paperIndex) {
  return tracks[trackIndex].getSession ( sessionIndex ).getPaper ( paperIndex );
 }
 
-int *Conference::getAllParallel(int trackIndex, int sessionIndex, int paperIndex){
+int* Conference::getAllParallel(int trackIndex, int sessionIndex, int paperIndex){
 
     int papersInSession = getPapersInSession() ;
     int parallelTracks = getParallelTracks() ; 
     int *rowIndices = new int[parallelTracks*(papersInSession -1)];
-    
+    int count = 0 ; 
     for(int i = 0 ; i < getParallelTracks( ); i += 1) {
         if(i != trackIndex) {
             for(int j = 0 ; j < papersInSession ; j += 1 ){
-                rowIndices[i*getParallelTracks( ) + j ]= getPaper(i,sessionIndex,j) ; 
+                // cout<<getPaper(i,sessionIndex,j)<<endl;
+                rowIndices[count++]= getPaper(i,sessionIndex,j) ; 
             }
         }
     }
 
+//  cout<<rowIndices[0]<<endl;
     return rowIndices ; 
 }
 
 int *Conference::getPapersInCurrentSession(int trackIndex, int sessionIndex, int paperIndex){
     int papersInSession = getPapersInSession() ; 
     int *currSessionIndices =  new int[papersInSession - 1];
-    for(int i = 0 ; i < papersInSession ; i += 1) {
+
+    int count =0;
+    for(int i = 0 ; i < papersInSession; i += 1) {
         if(i !=  paperIndex){
-            currSessionIndices[i] = getPaper(trackIndex,sessionIndex,i) ;  
+            currSessionIndices[count++] = getPaper(trackIndex,sessionIndex,i) ;  
         }
     }
-
+    // cout<<currSessionIndices[0]<<endl;
     return currSessionIndices ; 
     
 }

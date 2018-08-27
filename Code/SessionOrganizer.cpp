@@ -20,6 +20,27 @@ SessionOrganizer::SessionOrganizer ( string filename )
 {
     readInInputFile ( filename );
     conference = new Conference ( parallelTracks, sessionsInTrack, papersInSession );
+    
+
+    // int sessionsInTrack = conference->getSessionsInTrack();
+    // int parallelTracks = conference->getParallelTracks();
+    // int papersInSession = conference->getPapersInSession();
+     
+    int paperCounter = sessionsInTrack*parallelTracks*papersInSession - 1;
+    
+    for ( int i = 0; i < sessionsInTrack; i++ )
+    {
+        for ( int j = 0; j < parallelTracks; j++ )
+        {
+            for ( int k = 0; k < papersInSession; k++ )
+            {
+                conference->setPaper ( j, i, k, paperCounter );
+                paperCounter--;
+            }
+        }
+    }
+
+    conference->setScore(scoreOrganization());
 }
 
 void SessionOrganizer::organizePapers ( )
@@ -37,8 +58,8 @@ void SessionOrganizer::organizePapers ( )
         paper2[0] = papers[3];
         paper2[1] = papers[4];
         paper2[2] = papers[5];
-        double newScore = swappedScore(paper1,paper2,oldScore,this->getDistanceMatrix,tradeoffCoefficient,conference);
-        if(swappedScore(papers) > oldScore) {
+        double newScore = swappedScore(paper1,paper2,oldScore,this->getDistanceMatrix(),tradeoffCoefficient,conference);
+        if(newScore > oldScore) {
             conference->swap(papers,newScore);
             oldScore = newScore;
 
@@ -111,27 +132,6 @@ void SessionOrganizer::readInInputFile ( string filename )
         cout << "More papers than slots available! slots:" << slots << " num papers:" << numberOfPapers << endl;
         exit ( 0 );
     }
-
-
-    // int sessionsInTrack = conference->getSessionsInTrack();
-    // int parallelTracks = conference->getParallelTracks();
-    // int papersInSession = conference->getPapersInSession();
-     
-    int paperCounter = sessionsInTrack*parallelTracks*papersInSession - 1;
-    
-    for ( int i = 0; i < sessionsInTrack; i++ )
-    {
-        for ( int j = 0; j < parallelTracks; j++ )
-        {
-            for ( int k = 0; k < papersInSession; k++ )
-            {
-                conference->setPaper ( j, i, k, paperCounter );
-                paperCounter--;
-            }
-        }
-    }
-
-    conference->setScore(scoreOrganization());
 }
 
 double** SessionOrganizer::getDistanceMatrix ( )

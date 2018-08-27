@@ -40,7 +40,7 @@ void splitString(string message, string delimiter, string result[], int n) {
 
 
 int * get2RandomPapers(int parallelTracks,int sessionsInTrack,int papersInSession) {
-    int papers[6];
+    int* papers = new int[6];
 
     default_random_engine generator;
     uniform_int_distribution<int> distributionTrack(0,parallelTracks - 1);
@@ -60,7 +60,9 @@ int * get2RandomPapers(int parallelTracks,int sessionsInTrack,int papersInSessio
 
 }
 
-double  swappedScore(int* paper1,int* paper2,double oldScore,double** getDistanceMatrix,double c,Conference* conference){
+double  swappedScore(int* paper1,int* paper2,double oldScore,double** distanceMatrix,double c,Conference* conference){
+
+    double newScore = oldScore;
 
     int p1T = paper1[0] ;
     int p1P = paper1[1]  ;
@@ -82,20 +84,23 @@ double  swappedScore(int* paper1,int* paper2,double oldScore,double** getDistanc
     int papersInSession = conference->getPapersInSession() ; 
 
     for(int i = 0 ; i < tracksNo*(papersInSession-1);i+=1) {
-        oldScore -= getDistanceMatrix[p1Row[i]][paper1InDM] ;
-        oldScore -= getDistanceMatrix[p2Row[i]][paper2InDM] ;
-        oldScore += getDistanceMatrix[p1Row[i]][paper2InDM] ;
-        oldScore += getDistanceMatrix[p2Row[i]][paper1InDM] ;
-    } 
-
-    for(int i = 0 ; i < papersInSession -1 ; i+=1) {
-        oldScore += getDistanceMatrix[p1Session[i]][paper1InDM] ;
-        oldScore += getDistanceMatrix[p2Session[i]][paper2InDM] ;
-        oldScore -= getDistanceMatrix[p1Session[i]][paper2InDM] ;
-        oldScore -= getDistanceMatrix[p2Session[i]][paper1InDM] ;                
+        // cout<<p1Row[i]<<' '<<paper1InDM<<endl;
+        // cout<<distanceMatrix[p1Row[i]][paper1InDM]<<endl;
+        newScore -= c*distanceMatrix[p1Row[i]][paper1InDM] ;
+        newScore -= c*distanceMatrix[p2Row[i]][paper2InDM] ;
+        newScore += c*distanceMatrix[p1Row[i]][paper2InDM] ;
+        newScore += c*distanceMatrix[p2Row[i]][paper1InDM] ;
     }
 
-    return oldScore ; 
+    for(int i = 0 ; i < papersInSession -1 ; i+=1) {
+        // cout<<p1Session[i]<<' '<<paper1InDM<<endl;
+        newScore += distanceMatrix[p1Session[i]][paper1InDM] ;
+        newScore += distanceMatrix[p2Session[i]][paper2InDM] ;
+        newScore -= distanceMatrix[p1Session[i]][paper2InDM] ;
+        newScore -= distanceMatrix[p2Session[i]][paper1InDM] ;                
+    }
+
+    return newScore ; 
 } 
 
 #endif	/* UTIL_H */
