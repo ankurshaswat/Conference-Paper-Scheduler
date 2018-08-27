@@ -134,8 +134,8 @@ void Conference::printConference (char * filename )
         ofile<<"\n";
     }
     ofile.close();
-    cout<<"Organization written to ";
-    printf("%s :)\n",filename);
+    // cout<<"Organization written to ";
+    // printf("%s :)\n",filename);
 
 }
 
@@ -153,7 +153,6 @@ void Conference::swap(int* paper1,int* paper2,double newScore) {
 
     oldVals[0] = getPaper(paper1[0],paper1[1],paper1[2]);
     oldVals[1] = getPaper(paper2[0],paper2[1],paper2[2]);
-    // oldVals[1] = getPaper(papers[3],papers[4],papers[5]);
 
     setPaper(paper1[0],paper1[1],paper1[2],oldVals[1]);
     setPaper(paper2[0],paper2[1],paper2[2],oldVals[0]);
