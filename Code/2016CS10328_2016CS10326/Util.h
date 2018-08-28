@@ -39,7 +39,7 @@ void splitString(string message, string delimiter, string result[], int n)
     }
 }
 
-int *get2RandomPapers(int parallelTracks, int sessionsInTrack, int papersInSession)
+int *getRandomPaper(int parallelTracks, int sessionsInTrack, int papersInSession)
 {
     int *paper = new int[3];
 
@@ -50,18 +50,20 @@ int *get2RandomPapers(int parallelTracks, int sessionsInTrack, int papersInSessi
     return paper;
 }
 
-int *get2RandomPapers(int parallelTracks , int sessionsInTrack , int papersInSession, int seedFactor) {
+int *get2RandomPaper(int parallelTracks , int sessionsInTrack , int papersInSession, int seedFactor) {
 
-    int *paper = new int[3];
+    int *papers = new int[6];
 
     srand(seedFactor* time(0));
-    paper[0] = rand() % parallelTracks;
-    paper[1] = rand() % sessionsInTrack;
-    paper[2] = rand() % papersInSession;
-    return paper;   
+    papers[0] = rand() % parallelTracks;
+    papers[1] = rand() % sessionsInTrack;
+    papers[2] = rand() % papersInSession;
+    papers[3] = rand() % parallelTracks;
+    papers[4] = rand() % sessionsInTrack;
+    papers[5] = rand() % papersInSession;
+    return papers;   
 
 }
-
 
 double swappedScore(int *paper1, int *paper2, double oldScore, double **distanceMatrix, double c, Conference *conference)
 {

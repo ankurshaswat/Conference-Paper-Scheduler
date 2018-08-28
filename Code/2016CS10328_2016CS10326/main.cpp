@@ -30,14 +30,14 @@ int main(int argc, char **argv)
     SessionOrganizer *organizer = new SessionOrganizer(inputfilename);
 
     // Organize the papers into tracks based on similarity.
-    organizer->organizePapers();
-
+    // organizer->organizePapers();
+    organizer->simulatedAnnealing();
     organizer->printSessionOrganiser(argv[2]);
 
     // Score the organization against the gold standard.
 
     double score = organizer->scoreOrganization(organizer->conference);
-    // cout << "score:" << score << endl;
+    cout << "score:" << score << endl;
 
     // clock_t end = clock();
     // cout<<"Seconds Taken = "<<double(end-begin) / CLOCKS_PER_SEC;
