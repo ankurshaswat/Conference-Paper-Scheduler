@@ -286,10 +286,11 @@ void SessionOrganizer::organizePapers()
     // }
 
     // Clearing Variables
-    delete papersArray;
+    delete[] papersArray;
 }
 
-void SessionOrganizer::simulatedAnnealing() {
+void SessionOrganizer::simulatedAnnealing()
+{
 
     clock_t begin = clock();
     int milliSeconds = processingTimeInMinutes * 60 * 1000;
@@ -322,18 +323,19 @@ void SessionOrganizer::simulatedAnnealing() {
     double oldScore = conference->getScore();
     double bestModelScore = oldScore;
 
-    double initialT = 1000000 ; 
-    double finalT = 0.000001 ; 
-    double T = initialT ; 
-    double a = 0.99999 ;
-    int seedFactor = 2 ; 
-    double goProb ;
-    double delE ; 
-    double randomNo ; 
-    int count2 = 0 ; 
-    srand(time(0)) ; 
+    double initialT = 1000000;
+    double finalT = 0.000001;
+    double T = initialT;
+    double a = 0.99999;
+    int seedFactor = 2;
+    double goProb;
+    double delE;
+    double randomNo;
+    int count2 = 0;
+    srand(time(0));
     int count = 0;
-    while(true) {
+    while (true)
+    {
         count++;
         T *= a;
 
@@ -344,19 +346,20 @@ void SessionOrganizer::simulatedAnnealing() {
         paper1[1] = papers[1];
         paper1[2] = papers[2];
 
-        int paper2[3] ; 
+        int paper2[3];
 
-        paper2[0] = papers[3] ; 
-        paper2[1] = papers[4] ; 
-        paper2[2] = papers[5] ; 
-        seedFactor += 1 ; 
+        paper2[0] = papers[3];
+        paper2[1] = papers[4];
+        paper2[2] = papers[5];
+        seedFactor += 1;
 
         // cout<<paper1[0]<<' '<<paper1[1]<<' '<<paper1[2]<<' '<<paper2[0]<<' '<<paper2[1]<<' '<<paper2[2]<<endl;
 
         double newScore = swappedScore(paper1, paper2, oldScore, distanceMatrix, tradeoffCoefficient, conference);
 
-        if(T > finalT) {
-            count2 ++ ;
+        if (T > finalT)
+        {
+            count2++;
         }
 
         if (newScore > oldScore)
@@ -364,28 +367,30 @@ void SessionOrganizer::simulatedAnnealing() {
             conference->swap(paper1, paper2, newScore);
             oldScore = newScore;
         }
-        else if(T > finalT ) {
-            delE = newScore - oldScore ; 
-            delE = delE / T ; 
+        else if (T > finalT)
+        {
+            delE = newScore - oldScore;
+            delE = delE / T;
             goProb = exp(delE);
-            randomNo =((double) rand() / (RAND_MAX)) ; 
-            if(randomNo < goProb) {
+            randomNo = ((double)rand() / (RAND_MAX));
+            if (randomNo < goProb)
+            {
                 conference->swap(paper1, paper2, newScore);
-                oldScore = newScore;                
+                oldScore = newScore;
             }
         }
 
         // cout<<"Score = "<<oldScore<<endl;
-        if(count%400 == 0 && milliSeconds - getElapsedMilli(begin) < TIME_CUTOFF) {
+        // cout<<oldScore<<endl;
+        if (count % 400 == 0 && milliSeconds - getElapsedMilli(begin) < TIME_CUTOFF)
+        {
             break;
         }
     }
     // cout<<oldScore;
-    cout<<count<<endl;
-    cout<<count2<<endl;
-    
-} 
-
+    // cout << count << endl;
+    // cout << count2 << endl;
+}
 
 void SessionOrganizer::readInInputFile(string filename)
 {
