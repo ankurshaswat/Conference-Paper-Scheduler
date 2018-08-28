@@ -15,6 +15,7 @@ using namespace std;
  */
 int main(int argc, char **argv)
 {
+    // clock_t begin = clock();
     // Parse the input.
     if (argc < 3)
     {
@@ -37,6 +38,9 @@ int main(int argc, char **argv)
 
     double score = organizer->scoreOrganization(organizer->conference);
     // cout << "score:" << score << endl;
+
+    // clock_t end = clock();
+    // cout<<"Seconds Taken = "<<double(end-begin) / CLOCKS_PER_SEC;
 
     return 0;
 }

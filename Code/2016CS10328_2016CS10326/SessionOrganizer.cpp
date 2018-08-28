@@ -7,7 +7,7 @@
 #include "SessionOrganizer.h"
 #include "Util.h"
 #include <algorithm>
-#define TIME_CUTOFF 100
+#define TIME_CUTOFF 1000
 
 SessionOrganizer::SessionOrganizer()
 {
