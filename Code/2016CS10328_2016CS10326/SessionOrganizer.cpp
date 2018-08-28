@@ -7,6 +7,8 @@
 #include "SessionOrganizer.h"
 #include "Util.h"
 #include <algorithm>
+#include <math.h>
+#include <time.h>
 #define TIME_CUTOFF 1000
 
 SessionOrganizer::SessionOrganizer()
@@ -286,6 +288,90 @@ void SessionOrganizer::organizePapers()
     // Clearing Variables
     delete papersArray;
 }
+
+void SessionOrganizer::simulatedAnnealing() {
+
+    clock_t begin = clock();
+    int milliSeconds = processingTimeInMinutes * 60 * 1000;
+    Conference *tempConference = new Conference(parallelTracks, sessionsInTrack, papersInSession);
+    int paperCounter = 0;
+    int totalPapers = parallelTracks * sessionsInTrack * papersInSession;
+    int *papersArray = new int[totalPapers];
+
+    for (int i = 0; i < totalPapers; i++)
+    {
+        papersArray[i] = i;
+    }
+
+    for (int i = 0; i < sessionsInTrack; i++)
+    {
+        for (int j = 0; j < parallelTracks; j++)
+        {
+            for (int k = 0; k < papersInSession; k++)
+            {
+                tempConference->setPaper(j, i, k, paperCounter);
+                conference->setPaper(j, i, k, paperCounter);
+                paperCounter++;
+            }
+        }
+    }
+
+    double **distanceMatrix = this->getDistanceMatrix();
+    tempConference->setScore(scoreOrganization(tempConference));
+    double oldScore = tempConference->getScore();
+    double bestModelScore = oldScore;
+
+    double initialT = 100000 ; 
+    double finalT = 0.000001 ; 
+    double T = initialT ; 
+    double a = 0.99 ;
+    int seedFactor = 2 ; 
+    double goProb ;
+    double delE ; 
+    double randomNo ; 
+    while(T > finalT ) {
+
+        int *papers = get2RandomPapers(parallelTracks, sessionsInTrack, papersInSession);
+        bool swapped = false;
+        int paper1[3];
+        paper1[0] = papers[0];
+        paper1[1] = papers[1];
+        paper1[2] = papers[2];
+
+        int paper2[3] ; 
+        papers = get2RandomPapers(parallelTracks , sessionsInTrack , papersInSession , seedFactor) ;     
+
+        paper2[0] = papers[0] ; 
+        paper2[1] = papers[1] ; 
+        paper2[2] = papers[2] ; 
+
+        seedFactor += 1 ; 
+
+        double newScore = swappedScore(paper1, paper2, oldScore, distanceMatrix, tradeoffCoefficient, tempConference);
+        if (newScore > oldScore)
+        {
+            tempConference->swap(paper1, paper2, newScore);
+            oldScore = newScore;
+        }
+
+        else {
+              
+            delE = newScore - oldScore ; 
+            delE = delE / T ; 
+            goProb = exp(delE) ;
+            srand(time(0) * seedFactor) ; 
+            randomNo =((double) rand() / (RAND_MAX)) ; 
+            if(randomNo < goProb) {
+                tempConference->swap(paper1, paper2, newScore);
+                oldScore = newScore;                
+            }
+        }
+
+
+    }
+    
+} 
+
 
 void SessionOrganizer::readInInputFile(string filename)
 {

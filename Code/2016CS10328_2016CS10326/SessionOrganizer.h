@@ -70,6 +70,9 @@ class SessionOrganizer
     double scoreOrganization(Conference *conference);
 
     void printSessionOrganiser(char *);
+
+
+    void simulatedAnnealing() ; 
 };
 
 #endif /* SESSIONORGANIZER_H */

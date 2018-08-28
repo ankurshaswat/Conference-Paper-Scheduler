@@ -50,6 +50,19 @@ int *get2RandomPapers(int parallelTracks, int sessionsInTrack, int papersInSessi
     return paper;
 }
 
+int *get2RandomPapers(int parallelTracks , int sessionsInTrack , int papersInSession, int seedFactor) {
+
+    int *paper = new int[3];
+
+    srand(seedFactor* time(0));
+    paper[0] = rand() % parallelTracks;
+    paper[1] = rand() % sessionsInTrack;
+    paper[2] = rand() % papersInSession;
+    return paper;   
+
+}
+
+
 double swappedScore(int *paper1, int *paper2, double oldScore, double **distanceMatrix, double c, Conference *conference)
 {
 
