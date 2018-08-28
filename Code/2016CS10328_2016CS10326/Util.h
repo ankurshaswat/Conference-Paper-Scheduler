@@ -41,21 +41,13 @@ void splitString(string message, string delimiter, string result[], int n)
 
 int *get2RandomPapers(int parallelTracks, int sessionsInTrack, int papersInSession)
 {
-    int *papers = new int[6];
+    int *paper = new int[3];
 
     srand(time(0));
-
-    do
-    {
-        papers[0] = rand() % parallelTracks;
-        papers[1] = rand() % sessionsInTrack;
-        papers[2] = rand() % papersInSession;
-        papers[3] = rand() % parallelTracks;
-        papers[4] = rand() % sessionsInTrack;
-        papers[5] = rand() % papersInSession;
-    } while (papers[1] == papers[4] && papers[0] == papers[3]);
-
-    return papers;
+    paper[0] = rand() % parallelTracks;
+    paper[1] = rand() % sessionsInTrack;
+    paper[2] = rand() % papersInSession;
+    return paper;
 }
 
 double swappedScore(int *paper1, int *paper2, double oldScore, double **distanceMatrix, double c, Conference *conference)
@@ -153,7 +145,7 @@ double swappedScore(int *paper1, int *paper2, double oldScore, double **distance
 int getElapsedMilli(clock_t initial)
 {
     clock_t end = clock();
-    return double(end - initial) * 100 / CLOCKS_PER_SEC;
+    return double(end - initial) * 1000 / CLOCKS_PER_SEC;
 }
 
 #endif /* UTIL_H */

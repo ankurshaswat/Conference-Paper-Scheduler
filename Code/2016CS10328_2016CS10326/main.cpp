@@ -36,7 +36,7 @@ int main(int argc, char **argv)
     // Score the organization against the gold standard.
 
     double score = organizer->scoreOrganization(organizer->conference);
-    cout << "score:" << score << endl;
+    // cout << "score:" << score << endl;
 
     return 0;
 }
