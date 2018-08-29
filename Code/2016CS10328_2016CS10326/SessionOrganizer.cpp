@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <math.h>
 #include <time.h>
-#define TIME_CUTOFF 700
+#define TIME_CUTOFF 0.5
 
 SessionOrganizer::SessionOrganizer()
 {
@@ -85,7 +85,7 @@ void SessionOrganizer::organizePapers()
                 bestModelScore = oldScore;
             }
 
-            if (milliSeconds - getElapsedMilli(begin) < TIME_CUTOFF)
+            if (milliSeconds - getElapsedMilli(begin) < TIME_CUTOFF * totalPapers)
             {
                 break;
             }
@@ -163,7 +163,7 @@ void SessionOrganizer::organizePapers()
             {
                 unchangedCount++;
             }
-            if (unchangedCount > 0.4 * totalPapers || milliSeconds - getElapsedMilli(begin) < TIME_CUTOFF)
+            if (unchangedCount > 0.4 * totalPapers || milliSeconds - getElapsedMilli(begin) < TIME_CUTOFF * totalPapers)
             {
                 break;
             }
@@ -195,7 +195,7 @@ void SessionOrganizer::organizePapers()
     //             bestModelScore = oldScore;
     //         }
 
-    //         if (milliSeconds - getElapsedMilli(begin) < TIME_CUTOFF)
+    //         if (milliSeconds - getElapsedMilli(begin) < TIME_CUTOFF * totalPapers)
     //         {
     //             break;
     //         }
@@ -278,7 +278,7 @@ void SessionOrganizer::organizePapers()
     //         }
     //         oldScore = bestScore;
 
-    //         if (unchangedCount > 0.4 * totalPapers || milliSeconds - getElapsedMilli(begin) < TIME_CUTOFF)
+    //         if (unchangedCount > 0.4 * totalPapers || milliSeconds - getElapsedMilli(begin) < TIME_CUTOFF * totalPapers)
     //         {
     //             break;
     //         }
@@ -382,7 +382,7 @@ void SessionOrganizer::simulatedAnnealing()
 
         // cout<<"Score = "<<oldScore<<endl;
         // cout<<oldScore<<endl;
-        if (count % 400 == 0 && milliSeconds - getElapsedMilli(begin) < TIME_CUTOFF)
+        if (count % 400 == 0 && milliSeconds - getElapsedMilli(begin) < TIME_CUTOFF * totalPapers)
         {
             break;
         }
