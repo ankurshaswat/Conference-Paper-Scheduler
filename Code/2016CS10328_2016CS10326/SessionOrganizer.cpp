@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <math.h>
 #include <time.h>
-#define TIME_CUTOFF 0.5
+#define TIME_CUTOFF 1000
 
 SessionOrganizer::SessionOrganizer()
 {
@@ -298,6 +298,7 @@ void SessionOrganizer::simulatedAnnealing()
     int paperCounter = 0;
     int totalPapers = parallelTracks * sessionsInTrack * papersInSession;
     int *papersArray = new int[totalPapers];
+    int cutoff = max(1000, int(totalPapers*0.3));
 
     for (int i = 0; i < totalPapers; i++)
     {
@@ -382,7 +383,7 @@ void SessionOrganizer::simulatedAnnealing()
 
         // cout<<"Score = "<<oldScore<<endl;
         // cout<<oldScore<<endl;
-        if (count % 400 == 0 && milliSeconds - getElapsedMilli(begin) < TIME_CUTOFF * totalPapers)
+        if (count % 400 == 0 && milliSeconds - getElapsedMilli(begin) < cutoff )
         {
             break;
         }
